@@ -1,8 +1,6 @@
 {
     "extends": ["eslint-config-standard"],
-    "plugins": ["react"],
-    "parserOptions": {},
-    "parser": "babel-eslint",
+    "plugins": [],
     "env": {
         "browser": true,
         "node": true,
@@ -11,9 +9,7 @@
     "ecmaFeatures": {
         "classes": true,
         "jsx": true
-    },
+      },
     "globals": {},
-    "rules": {
-        "react/jsx-uses-vars": 1
-    }
+    "rules": {}
 }

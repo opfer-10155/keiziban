@@ -9,4 +9,4 @@ package.jsonがあるディレクトリにて
 ```
 $ npm start
 ```
-http://localhost:1234 で UIを見られる
+http://localhost:1234 へ
