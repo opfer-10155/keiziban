@@ -7,3 +7,10 @@ services:
       - "12345:80"
     volumes:
       - ./frontend/dist:/usr/share/nginx/html
+  
+  backend:
+    build: ./backend
+    ports:
+      - "12346:3000"
+    volumes:
+      - ./backend/src:/home/app/src      
