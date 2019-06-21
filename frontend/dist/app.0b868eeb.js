@@ -27495,10 +27495,6 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-var base = {
-  baseURL: 'http://localhost:3000/image'
-};
-
 var UploadPage =
 /*#__PURE__*/
 function (_React$Component) {
@@ -27511,12 +27507,36 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(UploadPage).call(this, props));
 
+    _defineProperty(_assertThisInitialized(_this), "getImage", function () {
+      var url = 'https://httpbin.org/image/png';
+      var config = {
+        responseType: 'arraybuffer',
+        headers: {
+          'Content-Type': 'image/png'
+        }
+      };
+      (0, _axios.default)(url, config).then(function (res) {
+        console.log(res);
+        var blob = new Blob([res.data], {
+          type: 'image/png'
+        });
+        var URL = window.URL || window.webkitURL;
+        var imageURL = URL.createObjectURL(blob);
+
+        _this.setState({
+          imageURL: imageURL
+        });
+      });
+    });
+
     _defineProperty(_assertThisInitialized(_this), "handleSubmit", function (e) {
       console.log(_this.state.subject);
       var file = _this.state.file;
 
-      _this.sendFile(file).then().catch(function (err) {
-        throw err;
+      _this.sendImage(file).then(function (response) {
+        console.log(response.data);
+      }).catch(function (err) {
+        console.error(err);
       });
     });
 
@@ -27538,15 +27558,17 @@ function (_React$Component) {
       };
     });
 
-    _defineProperty(_assertThisInitialized(_this), "sendFile", function (file) {
+    _defineProperty(_assertThisInitialized(_this), "sendImage", function (file) {
       var url = 'http://localhost:3000/api/images';
-      return _axios.default.post(url, file);
-    });
-
-    _defineProperty(_assertThisInitialized(_this), "sendInfo", function (file_id) {
-      var body = {
-        subject: _this.state.subject
+      var headers = {
+        'Content-Type': 'multipart/form-data'
       };
+      var data = new FormData();
+      data.append('file', file);
+      console.log(file);
+      return _axios.default.post(url, data, {
+        headers: headers
+      });
     });
 
     _this.state = {
@@ -27555,7 +27577,9 @@ function (_React$Component) {
       year: 0,
       quarter: 0,
       teacher_name: '',
-      test_time: 0
+      test_time: 0,
+      imageURL: '',
+      downloadURL: ''
     };
     return _this;
   }
@@ -27565,12 +27589,12 @@ function (_React$Component) {
     value: function render() {
       return _react.default.createElement("div", null, _react.default.createElement("label", {
         htmlFor: "file"
-      }, "\u30A2\u30C3\u30D7\u30ED\u30FC\u30C9\u3059\u308B\u30D5\u30A1\u30A4\u30EB", _react.default.createElement("input", {
+      }, "\u30A2\u30C3\u30D7\u30ED\u30FC\u30C9\u3059\u308B\u30D5\u30A1\u30A4\u30EB"), _react.default.createElement("input", {
         type: "file",
         accept: "image/png",
-        multiple: "multiple",
+        name: "file",
         onChange: this.handleOnChangeFile
-      })), _react.default.createElement("label", null), _react.default.createElement("input", {
+      }), _react.default.createElement("label", null), _react.default.createElement("input", {
         type: "text",
         onChange: this.handleOnChange('subject'),
         value: this.state.subject
@@ -27579,7 +27603,15 @@ function (_React$Component) {
         value: "\u30A2\u30C3\u30D7\u30ED\u30FC\u30C9"
       }), _react.default.createElement("button", {
         onClick: this.handleSubmit
-      }, " \u6295\u7A3F "));
+      }, " \u6295\u7A3F "), _react.default.createElement("button", {
+        onClick: this.getImage
+      }, " \u753B\u50CF\u3092\u898B\u308B "), _react.default.createElement("a", {
+        id: "download",
+        href: this.state.imageURL,
+        download: "download-filename.png"
+      }, _react.default.createElement("img", {
+        src: this.state.imageURL
+      })));
     }
   }]);
 
@@ -27633,7 +27665,9 @@ function (_React$Component) {
   _createClass(UploadPage, [{
     key: "render",
     value: function render() {
-      return _react.default.createElement("div", null, _react.default.createElement(_uploadForm.default, null));
+      return _react.default.createElement("div", null, _react.default.createElement("h1", {
+        style: style
+      }, "hello"), _react.default.createElement(_uploadForm.default, null));
     }
   }]);
 
@@ -27641,6 +27675,9 @@ function (_React$Component) {
 }(_react.default.Component);
 
 exports.default = UploadPage;
+var style = {
+  color: 'red'
+};
 },{"react":"node_modules/react/index.js","../components/uploadForm":"src/scripts/components/uploadForm.jsx"}],"node_modules/@babel/runtime/helpers/esm/inheritsLoose.js":[function(require,module,exports) {
 "use strict";
 
@@ -31661,11 +31698,11 @@ var _reactRouterDom = require("react-router-dom");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var App = _react.default.createElement(_reactRouterDom.BrowserRouter, null, _react.default.createElement("div", null, _react.default.createElement(_reactRouterDom.Switch, null, _react.default.createElement(_reactRouterDom.Route, {
+var App = _react.default.createElement("div", null, _react.default.createElement(_reactRouterDom.BrowserRouter, null, _react.default.createElement("div", null, _react.default.createElement(_reactRouterDom.Switch, null, _react.default.createElement(_reactRouterDom.Route, {
   exact: true,
   path: "/",
   component: _uploadPage.default
-}))));
+})))));
 
 (0, _reactDom.render)(App, document.getElementById('app'));
 },{"react":"node_modules/react/index.js","react-dom":"node_modules/react-dom/index.js","./views/uploadPage":"src/scripts/views/uploadPage.jsx","react-router-dom":"node_modules/react-router-dom/esm/react-router-dom.js"}],"node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
@@ -31696,7 +31733,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51591" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52546" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

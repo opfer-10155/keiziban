@@ -4,13 +4,26 @@ services:
   frontend:
     image: nginx
     ports:
-      - "12345:80"
+      - "11111:80"
     volumes:
       - ./frontend/dist:/usr/share/nginx/html
-  
+
   backend:
     build: ./backend
     ports:
-      - "12346:3000"
+      - "22222:30000"
+
+  db:
+    image: mysql
+    ports:
+      - "33333:3306"
+    environment:
+      MYSQL_DATABASE: sample_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
     volumes:
-      - ./backend/src:/home/app/src      
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./log/mysql:/var/log/mysql
+      - ./db/data:/home/db/data

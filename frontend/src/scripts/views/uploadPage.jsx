@@ -9,8 +9,14 @@ export default class UploadPage extends React.Component {
   render () {
     return (
       <div>
+        <h1 style={style} >hello</h1>
         <FileUploadForm />
       </div>
     )
   }
 }
+
+const style = {
+  color: 'red'
+}
+

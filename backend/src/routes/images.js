@@ -8,21 +8,21 @@ const multer = require('multer')
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     // 保存したいパス
-    cb(null, '/var/image')
+    console.log(file.fieldname)
+    cb(null, '/tmp/image')
   },
   filename: function (req, file, cb) {
     // アップロードしたときのファイル名で保存
     cb(null, file.originalname)
+    console.log(file.fieldname)
   }
 })
 const upload = multer({ storage: storage })
 
 router.post('/', upload.single('file'), (req, res, next) => {
-  // POSTされた画像の情報をJSONで取得
-  const reqFileJson = JSON.stringify(req.file)
-  console.log(reqFileJson)
   // お好きな処理をここに
-
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
   res.json({ 'result': 'success!' })
 })
 

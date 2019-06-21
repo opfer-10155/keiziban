@@ -1,10 +1,6 @@
 import React from 'react'
 import axios from 'axios'
 
-const base = {
-  baseURL: 'http://localhost:3000/image'
-}
-
 export default class UploadPage extends React.Component {
   constructor (props) {
     super(props)
@@ -15,30 +11,53 @@ export default class UploadPage extends React.Component {
       year: 0,
       quarter: 0,
       teacher_name: '',
-      test_time: 0
+      test_time: 0,
+      imageURL: '',
+      downloadURL: ''
     }
   }
 
   render () {
     return (
       <div>
-        <label htmlFor="file">アップロードするファイル
-          <input type="file" accept="image/png" multiple="multiple" onChange={this.handleOnChangeFile} />
-        </label>
+        <label htmlFor="file">アップロードするファイル</label>
+        <input type="file" accept="image/png" name="file" onChange={this.handleOnChangeFile} />
         <label></label>
         <input type="text" onChange={this.handleOnChange('subject')} value={this.state.subject}></input>
         <input type="submit" value="アップロード" />
         <button onClick={this.handleSubmit}> 投稿 </button>
+        <button onClick={this.getImage}> 画像を見る </button>
+        <a id="download" href={this.state.imageURL} download="download-filename.png">
+          <img src={this.state.imageURL}></img>
+        </a>
       </div>
     )
+  }
+
+  getImage = () => {
+    const url = 'https://httpbin.org/image/png'
+    const config = {
+      responseType: 'arraybuffer',
+      headers: {
+        'Content-Type': 'image/png'
+      }
+    }
+    axios(url, config)
+      .then((res) => {
+        console.log(res)
+        const blob = new Blob([res.data], { type: 'image/png' })
+        const URL = window.URL || window.webkitURL
+        const imageURL = URL.createObjectURL(blob)
+        this.setState({ imageURL })
+      })
   }
 
   handleSubmit = (e) => {
     console.log(this.state.subject)
     const file = this.state.file
-    this.sendFile(file)
-      .then()
-      .catch((err) => { throw err })
+    this.sendImage(file)
+      .then((response) => { console.log(response.data) })
+      .catch((err) => { console.error(err) })
   }
 
   handleOnChangeFile = (e) => {
@@ -55,15 +74,14 @@ export default class UploadPage extends React.Component {
     }
   }
 
-  sendFile = (file) => {
+  sendImage = (file) => {
     const url = 'http://localhost:3000/api/images'
-    return axios.post(url, file)
-  }
-
-  sendInfo = (file_id) => {
-    const body = {
-      subject: this.state.subject
-
+    const headers = {
+      'Content-Type': 'multipart/form-data'
     }
+    const data = new FormData()
+    data.append('file', file)
+    console.log(file)
+    return axios.post(url, data, { headers })
   }
 }
